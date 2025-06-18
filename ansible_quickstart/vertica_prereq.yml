@@ -1,0 +1,121 @@
+---
+- name: Vertica Installation Prerequisites
+  hosts: myhosts
+  become: yes
+
+  tasks:
+
+    - name: Ensure required packages are installed
+      package:
+        name:
+          - bash
+          - mcelog
+          - sudo
+          - openssh
+          - which
+          - dialog
+          - sysstat
+          - gdb
+          - numactl
+          - chrony
+          - python3
+          - iputils
+        state: present
+
+    - name: Ensure NTP is enabled and running
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+
+    - name: Create Vertica group
+      group:
+        name: "verticadba"
+        state: present
+
+    - name: Create Vertica user
+      user:
+        name: "dbadmin"
+        group: "verticadba"
+        shell: /bin/bash
+        home: "/home/dbadmin"
+        state: present
+        create_home: yes
+
+    - name: Set limits.conf for Vertica user
+      copy:
+        dest: /etc/security/limits.d/99-vertica.conf
+        content: |
+          dbadmin soft nofile 65536
+          dbadmin hard nofile 65536
+          dbadmin soft nproc 65536
+          dbadmin hard nproc 65536
+
+    - name: Set kernel parameters for Vertica
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+      loop:
+        - { name: 'vm.swappiness', value: '0' }
+
+    - name: Disable Transparent Huge Pages (THP)
+      blockinfile:
+        path: /etc/rc.local
+        marker: "# {mark} ANSIBLE_MANAGED_THP"
+        block: |
+          echo never > /sys/kernel/mm/transparent_hugepage/enabled
+          echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      notify: Make rc.local executable
+
+    - name: Disable THP immediately
+      shell: |
+        echo never > /sys/kernel/mm/transparent_hugepage/enabled
+        echo never > /sys/kernel/mm/transparent_hugepage/defrag
+#      args:
+#        warn: false
+
+    - name: Disable SELinux immediately
+      shell: setenforce 0
+      when: ansible_selinux.status == "enabled"
+      become: yes
+      ignore_errors: yes
+
+    - name: Disable SELinux in config file (permanent)
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: SELINUX=disabled
+      become: yes
+
+    - name: Set TZ variable in /etc/profile
+      lineinfile:
+        path: /etc/profile
+        regexp: '^export TZ='
+        line: 'export TZ="Europe/Paris"'
+        create: yes
+      become: yes
+
+    - name: Copy Vertica RPM to all hosts
+      become: yes
+      copy:
+        src: /root/vertica-25.2.0.rpm   # Chemin sur la machine ANSIBLE (contrôle)
+        dest: /root/vertica-25.2.0.rpm  # Chemin sur la machine distante
+        owner: root
+        group: root
+        mode: '0644'
+
+
+    - name: Install Vertica RPM package
+      ansible.builtin.yum:
+        name: /root/vertica-25.2.0.rpm
+        state: present
+      become: yes
+
+
+  handlers:
+    - name: Make rc.local executable
+      file:
+        path: /etc/rc.local
+        mode: '0755'

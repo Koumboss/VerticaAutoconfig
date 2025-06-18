@@ -1,0 +1,4 @@
+vertica_user: dbadmin
+vertica_group: verticadba
+vertica_home: /home/dbadmin
+
