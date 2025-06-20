@@ -2,6 +2,8 @@
 - name: Vertica Installation Prerequisites
   hosts: myhosts
   become: yes
+  vars_files:
+    - vars.yml
 
   tasks:
 
@@ -60,6 +62,26 @@
       loop:
         - { name: 'vm.swappiness', value: '0' }
 
+    - name: Set block device readahead on Vertica partition
+      shell: /sbin/blockdev --setra 2048 "{{ vertica_partition }}"
+      become: yes
+
+    - name: Ensure readahead command is in /etc/rc.local
+      lineinfile:
+        path: /etc/rc.local
+        line: '/sbin/blockdev --setra 2048 "{{ vertica_partition }}"'
+        create: yes
+        state: present
+        mode: '0755'
+      become: yes
+
+    - name: Ensure /etc/rc.d/rc.local is executable (for RHEL/CentOS 7+)
+      file:
+        path: /etc/rc.d/rc.local
+        mode: '0755'
+        state: file
+      become: yes
+
     - name: Disable Transparent Huge Pages (THP)
       blockinfile:
         path: /etc/rc.local
@@ -89,11 +111,11 @@
         line: SELINUX=disabled
       become: yes
 
-    - name: Set TZ variable in /etc/profile
+    - name: Set TZ variable in home/dbadmin/.bashrc
       lineinfile:
-        path: /etc/profile
+        path: /home/dbadmin/.bashrc
         regexp: '^export TZ='
-        line: 'export TZ="Europe/Paris"'
+        line: 'export TZ="{{ timezone }}"'
         create: yes
       become: yes
 
@@ -109,7 +131,7 @@
 
     - name: Install Vertica RPM package
       ansible.builtin.yum:
-        name: /root/vertica-25.2.0.rpm
+        name: "{{ rpm_path }}"
         state: present
       become: yes
 
