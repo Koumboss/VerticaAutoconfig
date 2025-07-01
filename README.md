@@ -22,6 +22,11 @@ ssh-copy-id 10.30.30.23
 ```
 ansible-playbook -i inventory.ini vertica_prereq.yml
 ```
+![image](https://github.com/user-attachments/assets/e62cdbce-c723-4f77-8665-5e0c0f3b7736)
+![image](https://github.com/user-attachments/assets/f44674b6-f99e-4fd4-a802-c4394f08ba82)
+5. You can finally rerun the install_vertica script and your prerequisites will automatically pass.
+![image](https://github.com/user-attachments/assets/81923704-1493-4e8b-b396-9f3b7f45c70e)
+
 
 # Next steps
 1. Automatically generate a backup.ini file for backups.
