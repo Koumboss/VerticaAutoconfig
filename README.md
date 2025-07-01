@@ -11,6 +11,7 @@ Small Ansible script for automatically configuring OS level prerequisites on all
 2. Modify the inventory.ini file with your one servers’ IPs
 3. Modify the vars.yml file appropriately
 4. Run the following command to execute the script
+<code>ansible-playbook -i inventory.ini vertica_prereq.yml</code>
 
 # Next steps
 1. Automatically generate a backup.ini file for backups.
