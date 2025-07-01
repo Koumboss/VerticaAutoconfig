@@ -9,7 +9,6 @@ Small Ansible script for automatically configuring OS level prerequisites on all
 ## How to run
 1. Download the project from Github
 2. Modify the inventory.ini file with your one servers’ IPs
-3. Modify the vars.yml file appropriately :
 ```
 [myhosts]
 10.30.30.149
@@ -19,7 +18,13 @@ Small Ansible script for automatically configuring OS level prerequisites on all
 10.30.30.148
 10.30.30.24
 ```
-4. Run the following command to execute the script :
+3. Modify the vars.yml file appropriately :
+```
+vertica_partition: /dev/mapper/rhel_vertica--node-root
+rpm_path: /root/vertica-25.2.0.rpm
+timezone: Europe/Paris
+```
+5. Run the following command to execute the script :
 ```
 ansible-playbook -i inventory.ini vertica_prereq.yml
 ```
