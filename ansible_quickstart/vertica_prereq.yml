@@ -122,8 +122,8 @@
     - name: Copy Vertica RPM to all hosts
       become: yes
       copy:
-        src: /root/vertica-25.2.0.rpm   # Chemin sur la machine ANSIBLE (contrôle)
-        dest: /root/vertica-25.2.0.rpm  # Chemin sur la machine distante
+        src: {{ rpm_path }}
+        dest: {{ rpm_path }} 
         owner: root
         group: root
         mode: '0644'
