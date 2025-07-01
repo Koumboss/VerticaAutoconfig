@@ -3,9 +3,15 @@ Small Ansible script for automatically configuring OS level prerequisites on all
 
 ## Before running the script
 1. In order to run the script, it is essential to have Ansible installed, to have a root account and to install the Vertica RPM and to drop it in a dedicated path.
-2. Make sure you change the hosts in the inventory.ini file.
+2. Install Python and its command line tool pip3
+3. Install Ansible using pip3
+
+## How to run
+1. Download the project from Github
+2. Modify the inventory.ini file with your one servers’ IPs
+3. Modify the vars.yml file appropriately
+4. Run the following command to execute the script
 
 # Next steps
 1. Automatically generate a backup.ini file for backups.
 2. Automatically create the DB based on a configuration file.
-3. 
