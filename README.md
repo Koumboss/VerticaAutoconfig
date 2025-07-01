@@ -7,9 +7,15 @@ Small Ansible script for automatically configuring OS level prerequisites on all
 # Replace the IP with each IP of your cluster
 ssh-copy-id 10.30.30.23
 ```
-3.  In order to run the script, it is essential to have Ansible installed, to have a root account and to install the Vertica RPM and to drop it in a dedicated path.
-4. Install Python and its command line tool pip3
-5. Install Ansible using pip3
+2.  In order to run the script, it is essential to have Ansible installed, to have a root account and to install the Vertica RPM and to drop it in a dedicated path.
+3. Install Python and its command line tool pip3
+```
+yum install -y python39
+```
+4. Install Ansible using pip3
+```
+pip3 install ansible
+```
 
 ## How to run
 1. Download the project from Github
