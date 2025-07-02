@@ -20,9 +20,9 @@ pip3 install ansible
 ## How to run
 1. Download the project from Github
 ![image](https://github.com/user-attachments/assets/b602ec9e-90f9-4ac7-b31d-5c5c4d7d9cf5)
-2. Modify the inventory.ini file with your one servers’ IPs
+2. Modify the inventory.ini file with your one servers’ IPs :</br>
 ![image](https://github.com/user-attachments/assets/f6b91c7e-6b8f-4f3a-81a8-3f6f5db4a57b)
-3. Modify the vars.yml file appropriately :
+3. Modify the vars.yml file appropriately :</br>
 ![image](https://github.com/user-attachments/assets/55deed8b-0552-4a82-85bb-b40cd8b1690b)
 4. Run the following command to execute the script :
 ```
